@@ -1409,6 +1409,20 @@ void remove_fd(fd)
     }
 }
 
+/*
+ * isready_fd - if fd can be read without blocking, return 1, else 0.
+ */
+int isready_fd(int fd)
+{
+    int n;
+
+    for (n = 0; n < n_pollfds; ++n)
+	if (pollfds[n].fd == fd) 
+	  return !!(pollfds[n].revents & POLLIN);
+
+    return 0;
+}
+
 #if 0
 /*
  * wait_loop_output - wait until there is data available on the

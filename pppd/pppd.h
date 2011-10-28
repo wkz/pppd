@@ -623,6 +623,7 @@ void wait_input __P((struct timeval *));
 				/* Wait for input, with timeout */
 void add_fd __P((int));		/* Add fd to set to wait for */
 void remove_fd __P((int));	/* Remove fd from set to wait for */
+int  isready_fd __P((int));	/* Check if fd can be read from */
 int  read_packet __P((u_char *)); /* Read PPP packet */
 int  get_loop_output __P((void)); /* Read pkts from loopback */
 void tty_send_config __P((int, u_int32_t, int, int));

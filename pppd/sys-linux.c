@@ -1097,6 +1097,14 @@ void remove_fd(int fd)
     FD_CLR(fd, &in_fds);
 }
 
+/*
+ * isready_fd - if fd can be read without blocking, return 1, else 0.
+ */
+int isready_fd(int fd)
+{
+    return !!FD_ISSET(fd, &in_fds);
+}
+
 
 /********************************************************************
  *
