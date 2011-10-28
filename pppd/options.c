@@ -102,6 +102,7 @@ char	passwd[MAXSECRETLEN];	/* Password for PAP */
 bool	persist = 0;		/* Reopen link after it goes down */
 char	our_name[MAXNAMELEN];	/* Our name for authentication purposes */
 bool	demand = 0;		/* do dial-on-demand */
+bool	bipolar = 0;		/* simultaneous dial-in/dial-out */
 char	*ipparam = NULL;	/* Extra parameter for ip up/down scripts */
 int	idle_time_limit = 0;	/* Disconnect if idle for this many seconds */
 int	holdoff = 30;		/* # seconds to pause before reconnecting */
@@ -237,6 +238,8 @@ option_t general_options[] = {
 
     { "demand", o_bool, &demand,
       "Dial on demand", OPT_INITONLY | 1, &persist },
+    { "bipolar", o_bool, &bipolar,
+      "Simultaneous dial-in/dial-out", OPT_INITONLY | 1, &persist },
 
     { "--version", o_special_noarg, (void *)showversion,
       "Show version number" },

@@ -97,6 +97,7 @@
 #include "pppd.h"
 #include "fsm.h"
 #include "lcp.h"
+#include "bipolar.h"
 
 void tty_process_extra_options __P((void));
 void tty_check_options __P((void));
@@ -140,6 +141,7 @@ bool	modem = 1;		/* Use modem control lines */
 int	inspeed = 0;		/* Input/Output speed requested */
 bool	lockflag = 0;		/* Create lock file to lock the serial dev */
 char	*initializer = NULL;	/* Script to initialize physical link */
+char	*accept_script = NULL;	/* Script to establish dial-in link  */
 char	*connect_script = NULL;	/* Script to establish physical link */
 char	*disconnect_script = NULL; /* Script to disestablish physical link */
 char	*welcomer = NULL;	/* Script to run after phys link estab. */
@@ -180,6 +182,9 @@ option_t tty_options[] = {
 
     { "init", o_string, &initializer,
       "A program to initialize the device", OPT_PRIO | OPT_PRIVFIX },
+
+    { "accept", o_string, &accept_script,
+      "A program to set up a dial-in connection", OPT_PRIO | OPT_PRIVFIX },
 
     { "connect", o_string, &connect_script,
       "A program to set up a connection", OPT_PRIO | OPT_PRIVFIX },
@@ -556,6 +561,7 @@ int connect_tty()
 	 */
 	got_sigterm = 0;
 	connector = doing_callback? callback_script: connect_script;
+	bipolar_set_connector(&connector);
 	if (devnam[0] != 0) {
 		for (;;) {
 			/* If the user specified the device name, become the
@@ -771,11 +777,15 @@ int connect_tty()
 
 void disconnect_tty()
 {
-	if (disconnect_script == NULL || hungup)
+	char* disconnector;
+	
+	disconnector = disconnect_script;
+	bipolar_set_disconnector(&disconnector);
+	if (disconnector == NULL || hungup)
 		return;
 	if (real_ttyfd >= 0)
 		set_up_tty(real_ttyfd, 1);
-	if (device_script(disconnect_script, ttyfd, ttyfd, 0) < 0) {
+	if (device_script(disconnector, ttyfd, ttyfd, 0) < 0) {
 		warn("disconnect script failed");
 	} else {
 		info("Serial link disconnected.");

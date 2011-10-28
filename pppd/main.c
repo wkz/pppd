@@ -105,6 +105,7 @@
 #include "ccp.h"
 #include "ecp.h"
 #include "pathnames.h"
+#include "bipolar.h"
 
 #ifdef USE_TDB
 #include "tdb.h"
@@ -512,13 +513,19 @@ main(argc, argv)
 	    new_phase(PHASE_DORMANT);
 	    demand_unblock();
 	    add_fd(fd_loop);
+	    bipolar_setup();
 	    for (;;) {
 		handle_events();
 		if (asked_to_quit)
 		    break;
+
 		if (get_loop_output())
 		    break;
+		
+		if (bipolar_incoming())
+		  break;
 	    }
+	    bipolar_teardown();
 	    remove_fd(fd_loop);
 	    if (asked_to_quit)
 		break;
