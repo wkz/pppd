@@ -54,7 +54,7 @@
 #include <sys/param.h>		/* for MAXPATHLEN and BSD4_4, if defined */
 #include <sys/types.h>		/* for u_int32_t, if defined */
 #include <sys/time.h>		/* for struct timeval */
-#include <net/ppp_defs.h>
+#include <linux/ppp_defs.h>
 #include "patchlevel.h"
 
 #if defined(__STDC__)
